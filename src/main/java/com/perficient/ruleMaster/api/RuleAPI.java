@@ -16,6 +16,6 @@ public interface RuleAPI {
     @GetMapping("/{recordId}")
     Rule getRule(@PathVariable String ruleName);
 
-    @PostMapping("/evaluate/{recordId}/{ruleName}")
+    @GetMapping("/evaluate/{recordId}/{ruleName}")
     String sendRuleModified(@PathVariable String ruleName, @PathVariable String recordId) throws SQLException;
 }
