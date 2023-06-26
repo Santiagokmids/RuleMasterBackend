@@ -82,8 +82,6 @@ public class TableService {
 
     public List<Map<String, Object>> getRecord(String tableName, String recordId){
 
-        System.out.println(tableName+" "+recordId);
-
         List<Map<String, Object>> records = jdbcTemplate.queryForList("SELECT * FROM " + tableName);
 
         List<Map<String, Object>> recordObtained = records.stream()
@@ -96,7 +94,7 @@ public class TableService {
         return recordObtained;
     }
 
-    public List<String> getColumns(String tableName) throws SQLException {
+    public List<String> getColumnNames(String tableName) throws SQLException {
 
         DatabaseMetaData metaData = jdbcTemplate.getDataSource().getConnection().getMetaData();
         ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
@@ -109,6 +107,21 @@ public class TableService {
         }
 
         return columnNames;
+    }
+
+    public List<String> getColumnTypes(String tableName) throws SQLException {
+
+        DatabaseMetaData metaData = jdbcTemplate.getDataSource().getConnection().getMetaData();
+        ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
+        ResultSetMetaData rsMetaData = resultSet.getMetaData();
+
+        List<String> columnTypes = new ArrayList<String>();
+
+        while (resultSet.next()) {
+            columnTypes.add(resultSet.getString("TYPE_NAME"));
+        }
+
+        return columnTypes;
     }
 
 }

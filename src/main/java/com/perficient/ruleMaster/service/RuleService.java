@@ -5,14 +5,9 @@ import com.perficient.ruleMaster.maper.RuleMapper;
 import com.perficient.ruleMaster.model.Rule;
 import com.perficient.ruleMaster.repository.RuleRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -24,8 +19,6 @@ public class RuleService {
     private final RuleRepository ruleRepository;
 
     private final RuleMapper ruleMapper;
-
-    private final JdbcTemplate jdbcTemplate;
 
     private final TableService tableService;
 
@@ -53,9 +46,10 @@ public class RuleService {
 
         List<Map<String, Object>> recordObtained = tableService.getRecord(tableName, recordId);
 
-        List<String> columnNames = tableService.getColumns(tableName);
+        List<String> columnNames = tableService.getColumnNames(tableName);
+        List<String> columnTypes = tableService.getColumnTypes(tableName);
 
-        return modifyRule(recordObtained.get(0), columnNames, ruleToEvaluate.getRuleDefinition());
+        return modifyRule(recordObtained.get(0), columnNames, columnTypes,ruleToEvaluate.getRuleDefinition());
     }
 
     public Rule getRuleByName(String ruleName){
@@ -63,12 +57,18 @@ public class RuleService {
                 .orElseThrow(() -> new RuntimeException("The rule with name "+ruleName+" not exists"));
     }
 
-    private String modifyRule(Map<String, Object> recordObtained, List<String> columnNames, String ruleDefinition){
+    private String modifyRule(Map<String, Object> recordObtained, List<String> columnNames,
+                              List<String> columnTypes, String ruleDefinition){
 
-        for (String columnName : columnNames) {
-            ruleDefinition = ruleDefinition.replace(columnName, recordObtained.get(columnName).toString());
+        for (int i = 0; i < columnNames.size(); i++) {
+
+            if (columnTypes.get(i).equals("varchar")){
+                ruleDefinition = ruleDefinition
+                        .replace(columnNames.get(i),"'"+recordObtained.get(columnNames.get(i)).toString()+"'");
+            }else {
+                ruleDefinition = ruleDefinition.replace(columnNames.get(i),recordObtained.get(columnNames.get(i)).toString());
+            }
         }
-
         return ruleDefinition;
     }
 
