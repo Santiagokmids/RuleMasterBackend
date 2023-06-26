@@ -1,6 +1,5 @@
 package com.perficient.ruleMaster.model;
 
-import com.perficient.ruleMaster.enums.Roles;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;

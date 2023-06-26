@@ -1,7 +1,6 @@
 package com.perficient.ruleMaster.service;
 
 import com.perficient.ruleMaster.dto.UserDTO;
-import com.perficient.ruleMaster.enums.Roles;
 import com.perficient.ruleMaster.maper.UserMapper;
 import com.perficient.ruleMaster.model.RuleMasterUser;
 import com.perficient.ruleMaster.repository.UserRepository;
@@ -24,7 +23,6 @@ public class UserService {
         verifyUserByEmail(userDTO.getEmail());
 
         RuleMasterUser user = userMapper.fromUserDTO(userDTO);
-        assignRoleToUser(userDTO.getRole(), user);
 
         user.setUserId(UUID.randomUUID());
 
@@ -35,16 +33,6 @@ public class UserService {
 
         if (userRepository.findByEmail(email).isPresent()){
             throw new RuntimeException("User with email "+email+" already exists");
-        }
-    }
-
-    private void assignRoleToUser(String roleName, RuleMasterUser user){
-
-        switch (roleName) {
-            case "Admin" -> user.setRole(String.valueOf(Roles.ADMIN));
-            case "Rule Manager" -> user.setRole(String.valueOf(Roles.RULE_MANAGER));
-            case "Column Manager" -> user.setRole(String.valueOf(Roles.COLUMN_MANAGER));
-            default -> user.setRole(String.valueOf(Roles.RECORD_MANAGER));
         }
     }
 
