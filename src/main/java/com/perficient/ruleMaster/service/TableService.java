@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,6 @@ public class TableService {
     public TableData getTableData(String tableName) throws SQLException {
         DatabaseMetaData metaData = jdbcTemplate.getDataSource().getConnection().getMetaData();
         ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
-        ResultSetMetaData rsMetaData = resultSet.getMetaData();
 
         // Retrieve column names and types
         List<String> columnNames = new ArrayList<String>();
