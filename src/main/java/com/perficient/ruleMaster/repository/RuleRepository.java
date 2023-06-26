@@ -11,6 +11,6 @@ import java.util.UUID;
 @Repository
 public interface RuleRepository extends JpaRepository<Rule, UUID> {
 
-    @Query("SELECT rule FROM RULE rule WHERE rule.ruleName = :name")
+    @Query("SELECT rule FROM Rule rule WHERE rule.ruleName = :name")
     Optional<Rule> findByName(String name);
 }
