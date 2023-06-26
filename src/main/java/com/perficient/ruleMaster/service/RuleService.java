@@ -27,6 +27,8 @@ public class RuleService {
 
     private final JdbcTemplate jdbcTemplate;
 
+    private final TableService tableService;
+
     public RuleDTO createRule(RuleDTO ruleDTO){
 
         verifyRuleName(ruleDTO.getRuleName());
@@ -44,36 +46,21 @@ public class RuleService {
         }
     }
 
-    //This method converts the column names to values of the record
-    public String sendRuleModified(String recordId, String ruleName, String tableName) throws SQLException {
+    //This method converts the column names to values of the record in the rule definition
+    public String sendRuleModified(String recordId, String ruleName,String tableName) throws SQLException {
 
         Rule ruleToEvaluate = getRuleByName(ruleName);
 
-        //Toca validar que el recordId exista o limitarlo en el front
+        List<Map<String, Object>> recordObtained = tableService.getRecord(tableName, recordId);
 
-        //Esto de aquí se puede poner en el service de TableData para obtener un registro específico
-            List<Map<String, Object>> records = jdbcTemplate.queryForList("SELECT * FROM " + tableName);
-
-            List<Map<String, Object>> recordObtained = records.stream()
-                    .filter(record -> record.get("record_id").toString().equals(recordId)).toList();
-
-        //Esto también se puede poner en el service de TableData para obtener las columnas
-            DatabaseMetaData metaData = jdbcTemplate.getDataSource().getConnection().getMetaData();
-            ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
-            ResultSetMetaData rsMetaData = resultSet.getMetaData();
-
-            // Retrieve column names and types
-            List<String> columnNames = new ArrayList<String>();
-
-            while (resultSet.next()) {
-                columnNames.add(resultSet.getString("COLUMN_NAME"));
-            }
+        List<String> columnNames = tableService.getColumns(tableName);
 
         return modifyRule(recordObtained.get(0), columnNames, ruleToEvaluate.getRuleDefinition());
     }
 
-    private Rule getRuleByName(String ruleName){
-        return ruleRepository.findByName(ruleName).orElseThrow(() -> new RuntimeException("The rule "+ruleName+" not exists"));
+    public Rule getRuleByName(String ruleName){
+        return ruleRepository.findByName(ruleName)
+                .orElseThrow(() -> new RuntimeException("The rule with name "+ruleName+" not exists"));
     }
 
     private String modifyRule(Map<String, Object> recordObtained, List<String> columnNames, String ruleDefinition){
