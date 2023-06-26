@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +78,50 @@ public class TableService {
         jdbcTemplate.update(sql.toString(), record.values().toArray());
 
         return  recordAdditionDTO;
+    }
+
+    public List<Map<String, Object>> getRecord(String tableName, String recordId){
+
+        List<Map<String, Object>> records = jdbcTemplate.queryForList("SELECT * FROM " + tableName);
+
+        List<Map<String, Object>> recordObtained = records.stream()
+                .filter(record -> record.get("record_id").toString().equals(recordId)).toList();
+
+        if (recordObtained.isEmpty()){
+            throw new RuntimeException("The record with id "+recordId+" not exists");
+        }
+
+        return recordObtained;
+    }
+
+    public List<String> getColumnNames(String tableName) throws SQLException {
+
+        DatabaseMetaData metaData = jdbcTemplate.getDataSource().getConnection().getMetaData();
+        ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
+        ResultSetMetaData rsMetaData = resultSet.getMetaData();
+
+        List<String> columnNames = new ArrayList<String>();
+
+        while (resultSet.next()) {
+            columnNames.add(resultSet.getString("COLUMN_NAME"));
+        }
+
+        return columnNames;
+    }
+
+    public List<String> getColumnTypes(String tableName) throws SQLException {
+
+        DatabaseMetaData metaData = jdbcTemplate.getDataSource().getConnection().getMetaData();
+        ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
+        ResultSetMetaData rsMetaData = resultSet.getMetaData();
+
+        List<String> columnTypes = new ArrayList<String>();
+
+        while (resultSet.next()) {
+            columnTypes.add(resultSet.getString("TYPE_NAME"));
+        }
+
+        return columnTypes;
     }
 
 }

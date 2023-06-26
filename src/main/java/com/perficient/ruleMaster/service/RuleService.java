@@ -5,14 +5,9 @@ import com.perficient.ruleMaster.maper.RuleMapper;
 import com.perficient.ruleMaster.model.Rule;
 import com.perficient.ruleMaster.repository.RuleRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -25,7 +20,7 @@ public class RuleService {
 
     private final RuleMapper ruleMapper;
 
-    private final JdbcTemplate jdbcTemplate;
+    private final TableService tableService;
 
     public RuleDTO createRule(RuleDTO ruleDTO){
 
@@ -44,44 +39,36 @@ public class RuleService {
         }
     }
 
-    //This method converts the column names to values of the record
-    public String sendRuleModified(String recordId, String ruleName, String tableName) throws SQLException {
+    //This method converts the column names to values of the record in the rule definition
+    public String sendRuleModified(String recordId, String ruleName,String tableName) throws SQLException {
 
         Rule ruleToEvaluate = getRuleByName(ruleName);
 
-        //Toca validar que el recordId exista o limitarlo en el front
+        List<Map<String, Object>> recordObtained = tableService.getRecord(tableName, recordId);
 
-        //Esto de aquí se puede poner en el service de TableData para obtener un registro específico
-            List<Map<String, Object>> records = jdbcTemplate.queryForList("SELECT * FROM " + tableName);
+        List<String> columnNames = tableService.getColumnNames(tableName);
+        List<String> columnTypes = tableService.getColumnTypes(tableName);
 
-            List<Map<String, Object>> recordObtained = records.stream()
-                    .filter(record -> record.get("record_id").toString().equals(recordId)).toList();
+        return modifyRule(recordObtained.get(0), columnNames, columnTypes,ruleToEvaluate.getRuleDefinition());
+    }
 
-        //Esto también se puede poner en el service de TableData para obtener las columnas
-            DatabaseMetaData metaData = jdbcTemplate.getDataSource().getConnection().getMetaData();
-            ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
-            ResultSetMetaData rsMetaData = resultSet.getMetaData();
+    public Rule getRuleByName(String ruleName){
+        return ruleRepository.findByName(ruleName)
+                .orElseThrow(() -> new RuntimeException("The rule with name "+ruleName+" not exists"));
+    }
 
-            // Retrieve column names and types
-            List<String> columnNames = new ArrayList<String>();
+    private String modifyRule(Map<String, Object> recordObtained, List<String> columnNames,
+                              List<String> columnTypes, String ruleDefinition){
 
-            while (resultSet.next()) {
-                columnNames.add(resultSet.getString("COLUMN_NAME"));
+        for (int i = 0; i < columnNames.size(); i++) {
+
+            if (columnTypes.get(i).equals("varchar")){
+                ruleDefinition = ruleDefinition
+                        .replace(columnNames.get(i),"'"+recordObtained.get(columnNames.get(i)).toString()+"'");
+            }else {
+                ruleDefinition = ruleDefinition.replace(columnNames.get(i),recordObtained.get(columnNames.get(i)).toString());
             }
-
-        return modifyRule(recordObtained.get(0), columnNames, ruleToEvaluate.getRuleDefinition());
-    }
-
-    private Rule getRuleByName(String ruleName){
-        return ruleRepository.findByName(ruleName).orElseThrow(() -> new RuntimeException("The rule "+ruleName+" not exists"));
-    }
-
-    private String modifyRule(Map<String, Object> recordObtained, List<String> columnNames, String ruleDefinition){
-
-        for (String columnName : columnNames) {
-            ruleDefinition = ruleDefinition.replace(columnName, recordObtained.get(columnName).toString());
         }
-
         return ruleDefinition;
     }
 
