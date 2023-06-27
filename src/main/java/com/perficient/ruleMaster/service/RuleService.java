@@ -70,6 +70,10 @@ public class RuleService {
                 .orElseThrow(() -> new RuntimeException("The rule with name "+ruleName+" not exists"));
     }
 
+    public List<RuleDTO> getAllRules(){
+        return ruleRepository.findAll().stream().map(ruleMapper::fromRule).toList();
+    }
+
 
     private String modifyRule(Map<String, Object> recordObtained, List<String> columnNames,
                               List<String> columnTypes, String ruleDefinition){

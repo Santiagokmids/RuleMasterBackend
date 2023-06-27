@@ -5,6 +5,7 @@ import com.perficient.ruleMaster.model.Rule;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public interface RuleAPI {
 
@@ -15,6 +16,9 @@ public interface RuleAPI {
 
     @GetMapping("/{ruleName}")
     Rule getRule(@PathVariable String ruleName);
+
+    @GetMapping
+    List<RuleDTO> getAllRules();
 
     @GetMapping("/evaluate/{recordId}/{ruleName}")
     String sendRuleModified(@PathVariable String ruleName, @PathVariable String recordId) throws SQLException;
