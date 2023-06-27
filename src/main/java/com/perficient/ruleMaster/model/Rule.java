@@ -22,4 +22,6 @@ public class Rule {
     private String ruleName;
 
     private String ruleDefinition;
+
+    private String ruleTransformed;
 }

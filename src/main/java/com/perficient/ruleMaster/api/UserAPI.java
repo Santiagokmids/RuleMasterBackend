@@ -13,12 +13,12 @@ public interface UserAPI {
 
     String BASE_USER_URL = "/users";
 
-    @PostMapping("/addUser")
+    @PostMapping
     UserDTO createUser(@RequestBody UserDTO userDTO);
 
     @GetMapping("/{userEmail}")
     UserDTO getUser(@PathVariable String userEmail) throws RuleMasterException;
 
-    @GetMapping("/getUsers")
+    @GetMapping
     List<UserDTO> getAllUsers();
 }

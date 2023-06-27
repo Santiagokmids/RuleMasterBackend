@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import static com.perficient.ruleMaster.api.RuleAPI.BASE_RULE_URL;
 
@@ -26,6 +27,11 @@ public class RuleController implements RuleAPI {
     @Override
     public RuleDTO getRule(String ruleName)  {
         return ruleService.getRuleByName(ruleName);
+    }
+
+    @Override
+    public List<RuleDTO> getAllRules() {
+        return ruleService.getAllRules();
     }
 
     @Override
