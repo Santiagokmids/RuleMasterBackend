@@ -14,4 +14,6 @@ public class RuleDTO {
     private String ruleName;
 
     private String ruleDefinition;
+
+    private  String ruleTransformed;
 }
