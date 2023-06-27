@@ -64,7 +64,7 @@ public class RuleService {
         List<String> columnNames = tableService.getColumnNames(tableName);
         List<String> columnTypes = tableService.getColumnTypes(tableName);
 
-        return modifyRule(recordObtained.get(0), columnNames, columnTypes,ruleToEvaluate.getRuleTransformed());
+        return modifyRule(recordObtained.get(0), columnNames, columnTypes, ruleToEvaluate.getRuleTransformed());
     }
 
     public RuleDTO getRuleByName(String ruleName) {
@@ -75,7 +75,6 @@ public class RuleService {
     public List<RuleDTO> getAllRules(){
         return ruleRepository.findAll().stream().map(ruleMapper::fromRule).toList();
     }
-
 
     private String modifyRule(Map<String, Object> recordObtained, List<String> columnNames,
                               List<String> columnTypes, String ruleDefinition){
