@@ -10,18 +10,23 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Data
-@Entity
 @Builder
-@NoArgsConstructor
+@Entity
 @AllArgsConstructor
-public class Rule {
+@NoArgsConstructor
+public class RuleMasterUser {
 
     @Id
-    private UUID ruleId;
+    private UUID userId;
 
-    private String ruleName;
+    private String name;
 
-    private String ruleDefinition;
+    private String lastName;
 
-    private String ruleTransformed;
+    private String email;
+
+    private String password;
+
+    private String role;
+
 }

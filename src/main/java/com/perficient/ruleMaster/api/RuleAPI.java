@@ -5,17 +5,21 @@ import com.perficient.ruleMaster.model.Rule;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public interface RuleAPI {
 
     String BASE_RULE_URL = "/rules";
 
-    @PostMapping("/createRule")
+    @PostMapping
     RuleDTO createRule(@RequestBody RuleDTO ruleDTO);
 
-    @GetMapping("/{recordId}")
+    @GetMapping("/{ruleName}")
     Rule getRule(@PathVariable String ruleName);
 
-    @PostMapping("/evaluate/{recordId}/{ruleName}")
+    @GetMapping
+    List<RuleDTO> getAllRules();
+
+    @GetMapping("/evaluate/{recordId}/{ruleName}")
     String sendRuleModified(@PathVariable String ruleName, @PathVariable String recordId) throws SQLException;
 }
