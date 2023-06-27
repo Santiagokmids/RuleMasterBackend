@@ -28,8 +28,21 @@ public class RuleService {
 
         Rule newRule = ruleMapper.fromRuleDTO(ruleDTO);
         newRule.setRuleId(UUID.randomUUID());
+        newRule.setRuleTransformed(transformRule(newRule.getRuleDefinition()));
 
         return ruleMapper.fromRule(ruleRepository.save(newRule));
+    }
+
+    private String transformRule(String rule){
+        rule=rule.replace("MAYOR QUE ","> ");
+        rule=rule.replace("MENOR QUE ","< ");
+        rule=rule.replace("IGUAL A ","=== ");
+        rule=rule.replace("DIFERENTE A ","!= ");
+        rule=rule.replace("VERDADERO ","true ");
+        rule=rule.replace("FALSO ","false ");
+        rule=rule.replace("Y ","&& ");
+        rule=rule.replace("O ","|| ");
+        return rule;
     }
 
     public void verifyRuleName(String ruleName){
@@ -49,13 +62,14 @@ public class RuleService {
         List<String> columnNames = tableService.getColumnNames(tableName);
         List<String> columnTypes = tableService.getColumnTypes(tableName);
 
-        return modifyRule(recordObtained.get(0), columnNames, columnTypes,ruleToEvaluate.getRuleDefinition());
+        return modifyRule(recordObtained.get(0), columnNames, columnTypes,ruleToEvaluate.getRuleTransformed());
     }
 
     public Rule getRuleByName(String ruleName){
         return ruleRepository.findByName(ruleName)
                 .orElseThrow(() -> new RuntimeException("The rule with name "+ruleName+" not exists"));
     }
+
 
     private String modifyRule(Map<String, Object> recordObtained, List<String> columnNames,
                               List<String> columnTypes, String ruleDefinition){

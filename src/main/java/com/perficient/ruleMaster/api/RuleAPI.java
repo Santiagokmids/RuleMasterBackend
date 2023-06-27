@@ -10,10 +10,10 @@ public interface RuleAPI {
 
     String BASE_RULE_URL = "/rules";
 
-    @PostMapping("/createRule")
+    @PostMapping
     RuleDTO createRule(@RequestBody RuleDTO ruleDTO);
 
-    @GetMapping("/{recordId}")
+    @GetMapping("/{ruleName}")
     Rule getRule(@PathVariable String ruleName);
 
     @GetMapping("/evaluate/{recordId}/{ruleName}")
