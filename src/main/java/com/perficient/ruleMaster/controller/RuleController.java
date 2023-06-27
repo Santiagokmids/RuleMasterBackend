@@ -2,7 +2,6 @@ package com.perficient.ruleMaster.controller;
 
 import com.perficient.ruleMaster.api.RuleAPI;
 import com.perficient.ruleMaster.dto.RuleDTO;
-import com.perficient.ruleMaster.model.Rule;
 import com.perficient.ruleMaster.service.RuleService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +24,7 @@ public class RuleController implements RuleAPI {
     }
 
     @Override
-    public Rule getRule(String ruleName) {
+    public RuleDTO getRule(String ruleName)  {
         return ruleService.getRuleByName(ruleName);
     }
 

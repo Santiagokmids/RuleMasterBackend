@@ -1,10 +1,12 @@
 package com.perficient.ruleMaster.service;
 
 import com.perficient.ruleMaster.dto.RuleDTO;
+import com.perficient.ruleMaster.exceptions.RuleMasterException;
 import com.perficient.ruleMaster.maper.RuleMapper;
 import com.perficient.ruleMaster.model.Rule;
 import com.perficient.ruleMaster.repository.RuleRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -35,14 +37,14 @@ public class RuleService {
     public void verifyRuleName(String ruleName){
 
         if (ruleRepository.findByName(ruleName).isPresent()){
-            throw new RuntimeException("A rule with this name "+ruleName+" already exists");
+            throw new RuleMasterException(HttpStatus.CONFLICT, "Rule with name " + ruleName + " already exists");
         }
     }
 
     //This method converts the column names to values of the record in the rule definition
     public String sendRuleModified(String recordId, String ruleName,String tableName) throws SQLException {
 
-        Rule ruleToEvaluate = getRuleByName(ruleName);
+        RuleDTO ruleToEvaluate = getRuleByName(ruleName);
 
         List<Map<String, Object>> recordObtained = tableService.getRecord(tableName, recordId);
 
@@ -52,9 +54,9 @@ public class RuleService {
         return modifyRule(recordObtained.get(0), columnNames, columnTypes,ruleToEvaluate.getRuleDefinition());
     }
 
-    public Rule getRuleByName(String ruleName){
-        return ruleRepository.findByName(ruleName)
-                .orElseThrow(() -> new RuntimeException("The rule with name "+ruleName+" not exists"));
+    public RuleDTO getRuleByName(String ruleName) {
+        return ruleMapper.fromRule(ruleRepository.findByName(ruleName)
+                .orElseThrow(() -> new RuleMasterException(HttpStatus.NOT_FOUND,"The rule with name "+ruleName+" not exists")));
     }
 
     private String modifyRule(Map<String, Object> recordObtained, List<String> columnNames,

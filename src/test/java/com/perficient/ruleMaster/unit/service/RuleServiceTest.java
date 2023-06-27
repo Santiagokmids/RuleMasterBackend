@@ -1,6 +1,7 @@
 package com.perficient.ruleMaster.unit.service;
 
 import com.perficient.ruleMaster.dto.RuleDTO;
+import com.perficient.ruleMaster.exceptions.RuleMasterException;
 import com.perficient.ruleMaster.maper.RuleMapper;
 import com.perficient.ruleMaster.maper.RuleMapperImpl;
 import com.perficient.ruleMaster.model.Rule;
@@ -12,6 +13,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class RuleServiceTest {
@@ -51,7 +54,34 @@ public class RuleServiceTest {
 
         when(ruleRepository.findByName(ruleToCreate.getRuleName())).thenReturn(Optional.of(rule));
 
-        ruleService.createRule(ruleToCreate);
+        var exception = assertThrows(RuleMasterException.class, () -> ruleService.createRule(ruleToCreate));
+
+        assertEquals(409, exception.getStatus().value());
+        assertEquals("Rule with name "+ruleToCreate.getRuleName()+" already exists", exception.getMessage());
+    }
+
+    @Test
+    public void testGetRule(){
+
+        RuleDTO ruleToCreate = defaultRule();
+        Rule rule = ruleMapper.fromRuleDTO(ruleToCreate);
+        when(ruleRepository.findByName(defaultRule().getRuleName())).thenReturn(Optional.of(rule));
+
+        RuleDTO ruleToGet = ruleService.getRuleByName(rule.getRuleName());
+
+        assertEquals("Rule 1", ruleToGet.getRuleName());
+        assertEquals("name === 'John' && age > 25", ruleToGet.getRuleDefinition());
+    }
+
+    @Test
+    public void testGetRuleThatNotExists(){
+
+        when(ruleRepository.findByName(defaultRule().getRuleName())).thenReturn(Optional.empty());
+
+        var exception = assertThrows(RuleMasterException.class, () -> ruleService.getRuleByName(defaultRule().getRuleName()));
+
+        assertEquals(404, exception.getStatus().value());
+        assertEquals("The rule with name "+defaultRule().getRuleName()+" not exists", exception.getMessage());
     }
 
     private RuleDTO defaultRule(){
