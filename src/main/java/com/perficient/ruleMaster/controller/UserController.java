@@ -24,7 +24,8 @@ public class UserController implements UserAPI {
     }
 
     @Override
-    public UserDTO getUser(String userEmail) {
+    public UserDTO getUser(String userEmail){
+
         return userService.getUser(userEmail);
     }
 

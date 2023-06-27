@@ -1,10 +1,12 @@
 package com.perficient.ruleMaster.service;
 
 import com.perficient.ruleMaster.dto.UserDTO;
+import com.perficient.ruleMaster.exceptions.RuleMasterException;
 import com.perficient.ruleMaster.maper.UserMapper;
 import com.perficient.ruleMaster.model.RuleMasterUser;
 import com.perficient.ruleMaster.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,14 +34,14 @@ public class UserService {
     private void verifyUserByEmail(String email){
 
         if (userRepository.findByEmail(email).isPresent()){
-            throw new RuntimeException("User with email "+email+" already exists");
+            throw new RuleMasterException(HttpStatus.CONFLICT, "User with email "+email+" already exists");
         }
     }
 
-    public UserDTO getUser(String email){
+    public UserDTO getUser(String email) {
 
         return userMapper.fromUser(userRepository.findByEmail(email).
-                orElseThrow(() -> new RuntimeException("User with email "+email+" not exists")));
+                orElseThrow(() -> new RuleMasterException(HttpStatus.NOT_FOUND, "User with email "+email+" not exists")));
     }
 
     public List<UserDTO> getAllUsers() {
