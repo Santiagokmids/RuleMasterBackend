@@ -1,7 +1,7 @@
 package com.perficient.ruleMaster.api;
 
 import com.perficient.ruleMaster.dto.RuleDTO;
-import com.perficient.ruleMaster.exceptions.RuleMasterException;
+import com.perficient.ruleMaster.error.exception.RuleMasterException;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;

@@ -1,7 +1,7 @@
 package com.perficient.ruleMaster.unit.service;
 
 import com.perficient.ruleMaster.dto.RuleDTO;
-import com.perficient.ruleMaster.exceptions.RuleMasterException;
+import com.perficient.ruleMaster.error.exception.RuleMasterException;
 import com.perficient.ruleMaster.maper.RuleMapper;
 import com.perficient.ruleMaster.maper.RuleMapperImpl;
 import com.perficient.ruleMaster.model.Rule;
