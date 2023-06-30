@@ -33,7 +33,7 @@ public class UserService {
         RuleMasterUser user = userMapper.fromUserDTO(userDTO);
 
         user.setUserId(UUID.randomUUID());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userMapper.fromUser(userRepository.save(user));
     }
