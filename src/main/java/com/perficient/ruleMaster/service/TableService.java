@@ -5,12 +5,11 @@ import com.perficient.ruleMaster.dto.RecordAdditionDTO;
 import com.perficient.ruleMaster.model.TableData;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Service;
 
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import javax.sql.DataSource;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,16 +31,24 @@ public class TableService {
     }
 
     public TableData getTableData(String tableName) throws SQLException {
-        DatabaseMetaData metaData = jdbcTemplate.getDataSource().getConnection().getMetaData();
+        DataSource dataSource = jdbcTemplate.getDataSource();
+        Connection connection = DataSourceUtils.getConnection(dataSource);
+
+        DatabaseMetaData metaData = connection.getMetaData();
         ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
 
         // Retrieve column names and types
         List<String> columnNames = new ArrayList<String>();
         List<String> columnTypes = new ArrayList<String>();
 
-        while (resultSet.next()) {
-            columnNames.add(resultSet.getString("COLUMN_NAME"));
-            columnTypes.add(resultSet.getString("TYPE_NAME"));
+        try {
+            while (resultSet.next()) {
+                columnNames.add(resultSet.getString("COLUMN_NAME"));
+                columnTypes.add(resultSet.getString("TYPE_NAME"));
+            }
+        } finally {
+            resultSet.close(); // Close the ResultSet
+            DataSourceUtils.releaseConnection(connection, dataSource); // Release the Connection
         }
 
         // Retrieve table records
@@ -94,34 +101,6 @@ public class TableService {
         return recordObtained;
     }
 
-    public List<String> getColumnNames(String tableName) throws SQLException {
 
-        DatabaseMetaData metaData = jdbcTemplate.getDataSource().getConnection().getMetaData();
-        ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
-        ResultSetMetaData rsMetaData = resultSet.getMetaData();
-
-        List<String> columnNames = new ArrayList<String>();
-
-        while (resultSet.next()) {
-            columnNames.add(resultSet.getString("COLUMN_NAME"));
-        }
-
-        return columnNames;
-    }
-
-    public List<String> getColumnTypes(String tableName) throws SQLException {
-
-        DatabaseMetaData metaData = jdbcTemplate.getDataSource().getConnection().getMetaData();
-        ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
-        ResultSetMetaData rsMetaData = resultSet.getMetaData();
-
-        List<String> columnTypes = new ArrayList<String>();
-
-        while (resultSet.next()) {
-            columnTypes.add(resultSet.getString("TYPE_NAME"));
-        }
-
-        return columnTypes;
-    }
 
 }
