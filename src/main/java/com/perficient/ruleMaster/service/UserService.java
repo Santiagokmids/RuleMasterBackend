@@ -3,12 +3,12 @@ package com.perficient.ruleMaster.service;
 import com.perficient.ruleMaster.dto.UserDTO;
 import com.perficient.ruleMaster.error.exception.DetailBuilder;
 import com.perficient.ruleMaster.error.exception.ErrorCode;
-import com.perficient.ruleMaster.error.exception.RuleMasterException;
 import com.perficient.ruleMaster.maper.UserMapper;
 import com.perficient.ruleMaster.model.RuleMasterUser;
 import com.perficient.ruleMaster.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,9 +20,11 @@ import static com.perficient.ruleMaster.error.util.RuleMasterExceptionBuilder.cr
 @AllArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
 
-    private final UserMapper userMapper;
+    private UserMapper userMapper;
+
+    private final PasswordEncoder passwordEncoder;
 
     public UserDTO createUser(UserDTO userDTO){
 
@@ -31,6 +33,7 @@ public class UserService {
         RuleMasterUser user = userMapper.fromUserDTO(userDTO);
 
         user.setUserId(UUID.randomUUID());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
         return userMapper.fromUser(userRepository.save(user));
     }

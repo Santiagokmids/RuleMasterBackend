@@ -9,6 +9,8 @@ import com.perficient.ruleMaster.repository.UserRepository;
 import com.perficient.ruleMaster.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -24,11 +26,16 @@ public class UserServiceTest {
 
     private UserService userService;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @BeforeEach
     private void init(){
         userRepository = mock(UserRepository.class);
         userMapper = spy(UserMapperImpl.class);
-        userService = new UserService(userRepository, userMapper);
+        passwordEncoder = mock(PasswordEncoder.class);
+
+        userService = new UserService(userRepository, userMapper, passwordEncoder);
     }
 
     @Test
@@ -53,8 +60,12 @@ public class UserServiceTest {
 
         var exception = assertThrows(RuleMasterException.class, () -> userService.createUser(user));
 
-        assertEquals(409, exception.getStatus().value());
-        assertEquals("User with email "+user.getEmail()+" already exists", exception.getMessage());
+        var error = exception.getRuleMasterError();
+        var details = error.getDetails();
+        assertEquals(1, details.size());
+        var detail = details.get(0);
+        assertEquals("ERR_DUPLICATED", detail.getErrorCode(), "Code doesn't match");
+        assertEquals("User with email "+ user.getEmail()+" already exists", detail.getErrorMessage(), "Error message doesn't match");
     }
 
     @Test
@@ -79,8 +90,12 @@ public class UserServiceTest {
 
         var exception = assertThrows(RuleMasterException.class, () -> userService.getUser(defaultUser().getEmail()));
 
-        assertEquals(404, exception.getStatus().value());
-        assertEquals("User with email "+defaultUser().getEmail()+" not exists", exception.getMessage());
+        var error = exception.getRuleMasterError();
+        var details = error.getDetails();
+        assertEquals(1, details.size());
+        var detail = details.get(0);
+        assertEquals("ERR_404", detail.getErrorCode(), "Code doesn't match");
+        assertEquals("User with email "+ defaultUser().getEmail()+" not found", detail.getErrorMessage(), "Error message doesn't match");
     }
 
     private UserDTO defaultUser(){
