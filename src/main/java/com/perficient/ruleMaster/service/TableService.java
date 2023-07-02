@@ -2,8 +2,11 @@ package com.perficient.ruleMaster.service;
 
 import com.perficient.ruleMaster.dto.ColumnAdditionDTO;
 import com.perficient.ruleMaster.dto.RecordAdditionDTO;
+import com.perficient.ruleMaster.error.exception.DetailBuilder;
+import com.perficient.ruleMaster.error.exception.ErrorCode;
 import com.perficient.ruleMaster.model.TableData;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.perficient.ruleMaster.error.util.RuleMasterExceptionBuilder.createRuleMasterException;
 
 @Service
 @AllArgsConstructor
@@ -93,9 +98,13 @@ public class TableService {
 
         List<Map<String, Object>> recordObtained = records.stream()
                 .filter(record -> record.get("record_id").toString().equals(recordId)).toList();
-
+        System.out.println("Cual es el bucle");
         if (recordObtained.isEmpty()){
-            throw new RuntimeException("The record with id "+recordId+" not exists");
+            throw createRuleMasterException(
+                    "Record not found",
+                    HttpStatus.NOT_FOUND,
+                    new DetailBuilder(ErrorCode.ERR_404, "Record with id", recordId)
+            ).get();
         }
 
         return recordObtained;
