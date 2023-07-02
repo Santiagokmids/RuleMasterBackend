@@ -7,6 +7,7 @@ import com.perficient.ruleMaster.error.exception.RuleMasterError;
 import com.perficient.ruleMaster.error.exception.RuleMasterException;
 import com.perficient.ruleMaster.maper.RuleMapper;
 import com.perficient.ruleMaster.model.Rule;
+import com.perficient.ruleMaster.model.TableData;
 import com.perficient.ruleMaster.repository.RuleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -70,8 +71,9 @@ public class RuleService {
 
         List<Map<String, Object>> recordObtained = tableService.getRecord(tableName, recordId);
 
-        List<String> columnNames = tableService.getColumnNames(tableName);
-        List<String> columnTypes = tableService.getColumnTypes(tableName);
+        TableData tableData=tableService.getTableData(tableName);
+        List<String> columnNames = tableData.getColumnNames();
+        List<String> columnTypes = tableData.getColumnTypes();
 
         return modifyRule(recordObtained.get(0), columnNames, columnTypes, ruleToEvaluate.getRuleTransformed());
     }

@@ -1,7 +1,7 @@
 package com.perficient.ruleMaster.api;
 
 import com.perficient.ruleMaster.dto.RuleDTO;
-import com.perficient.ruleMaster.error.exception.RuleMasterException;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -12,10 +12,10 @@ public interface RuleAPI {
     String BASE_RULE_URL = "/rules";
 
     @PostMapping
-    RuleDTO createRule(@RequestBody RuleDTO ruleDTO);
+    RuleDTO createRule(@Valid @RequestBody RuleDTO ruleDTO);
 
     @GetMapping("/{ruleName}")
-    RuleDTO getRule(@PathVariable String ruleName) throws RuleMasterException;
+    RuleDTO getRule(@PathVariable String ruleName);
 
     @GetMapping
     List<RuleDTO> getAllRules();
