@@ -1,13 +1,16 @@
 package com.perficient.ruleMaster.security;
 
-import org.springframework.security.core.Authentication;
+/*import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.security.auth.Subject;
 import java.util.Collection;
 
-public class CustomAuthentication implements Authentication {
+ */
 
+public class CustomAuthentication //implements Authentication
+{
+    /*
     private final Authentication authentication;
 
     private final String userId;
@@ -60,4 +63,6 @@ public class CustomAuthentication implements Authentication {
     public String getUserId(){
         return userId;
     }
+
+     */
 }

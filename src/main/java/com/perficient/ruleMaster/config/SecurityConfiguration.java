@@ -3,7 +3,7 @@ package com.perficient.ruleMaster.config;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
+/*import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,11 +14,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 
+
+ */
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfiguration {
-
+/*
     private final String secret = "lengthenoughsecrettotestencryptintallerfinal";
 
     private final RuleMasterAuthenticationManager ruleMasterAuthenticationManager;
@@ -38,4 +40,6 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }
+
+ */
 }
