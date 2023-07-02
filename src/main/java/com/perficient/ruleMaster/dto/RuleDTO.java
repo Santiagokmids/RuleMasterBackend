@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RuleDTO {
 
-    @NotBlank(message = "faltante")
+    @NotBlank(message = "Falta nombre de la regla.")
     private String ruleName;
 
     private String ruleDefinition;
