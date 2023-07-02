@@ -1,7 +1,7 @@
 package com.perficient.ruleMaster.unit.service;
 
 import com.perficient.ruleMaster.dto.RuleDTO;
-import com.perficient.ruleMaster.exceptions.RuleMasterException;
+import com.perficient.ruleMaster.error.exception.RuleMasterException;
 import com.perficient.ruleMaster.maper.RuleMapper;
 import com.perficient.ruleMaster.maper.RuleMapperImpl;
 import com.perficient.ruleMaster.model.Rule;
@@ -56,8 +56,12 @@ public class RuleServiceTest {
 
         var exception = assertThrows(RuleMasterException.class, () -> ruleService.createRule(ruleToCreate));
 
-        assertEquals(409, exception.getStatus().value());
-        assertEquals("Rule with name "+ruleToCreate.getRuleName()+" already exists", exception.getMessage());
+        var error = exception.getRuleMasterError();
+        var details = error.getDetails();
+        assertEquals(1, details.size());
+        var detail = details.get(0);
+        assertEquals("ERR_DUPLICATED", detail.getErrorCode(), "Code doesn't match");
+        assertEquals("Rule with name "+ rule.getRuleName()+" already exists", detail.getErrorMessage(), "Error message doesn't match");
     }
 
     @Test
@@ -80,8 +84,12 @@ public class RuleServiceTest {
 
         var exception = assertThrows(RuleMasterException.class, () -> ruleService.getRuleByName(defaultRule().getRuleName()));
 
-        assertEquals(404, exception.getStatus().value());
-        assertEquals("The rule with name "+defaultRule().getRuleName()+" not exists", exception.getMessage());
+        var error = exception.getRuleMasterError();
+        var details = error.getDetails();
+        assertEquals(1, details.size());
+        var detail = details.get(0);
+        assertEquals("ERR_404", detail.getErrorCode(), "Code doesn't match");
+        assertEquals("Rule with name "+ defaultRule().getRuleName()+" not found", detail.getErrorMessage(), "Error message doesn't match");
     }
 
     private RuleDTO defaultRule(){

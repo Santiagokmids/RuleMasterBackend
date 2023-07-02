@@ -1,7 +1,6 @@
 package com.perficient.ruleMaster.api;
 
 import com.perficient.ruleMaster.dto.RuleDTO;
-import com.perficient.ruleMaster.exceptions.RuleMasterException;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +15,7 @@ public interface RuleAPI {
     RuleDTO createRule(@Valid @RequestBody RuleDTO ruleDTO);
 
     @GetMapping("/{ruleName}")
-    RuleDTO getRule(@PathVariable String ruleName) throws RuleMasterException;
+    RuleDTO getRule(@PathVariable String ruleName);
 
     @GetMapping
     List<RuleDTO> getAllRules();

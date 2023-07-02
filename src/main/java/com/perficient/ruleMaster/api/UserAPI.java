@@ -1,7 +1,7 @@
 package com.perficient.ruleMaster.api;
 
 import com.perficient.ruleMaster.dto.UserDTO;
-import com.perficient.ruleMaster.exceptions.RuleMasterException;
+import com.perficient.ruleMaster.error.exception.RuleMasterException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

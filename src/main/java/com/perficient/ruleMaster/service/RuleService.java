@@ -1,7 +1,10 @@
 package com.perficient.ruleMaster.service;
 
 import com.perficient.ruleMaster.dto.RuleDTO;
-import com.perficient.ruleMaster.exceptions.RuleMasterException;
+import com.perficient.ruleMaster.error.exception.DetailBuilder;
+import com.perficient.ruleMaster.error.exception.ErrorCode;
+import com.perficient.ruleMaster.error.exception.RuleMasterError;
+import com.perficient.ruleMaster.error.exception.RuleMasterException;
 import com.perficient.ruleMaster.maper.RuleMapper;
 import com.perficient.ruleMaster.model.Rule;
 import com.perficient.ruleMaster.model.TableData;
@@ -14,6 +17,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import static com.perficient.ruleMaster.error.util.RuleMasterExceptionBuilder.createRuleMasterException;
 
 @Service
 @AllArgsConstructor
@@ -51,7 +56,11 @@ public class RuleService {
     public void verifyRuleName(String ruleName){
 
         if (ruleRepository.findByName(ruleName).isPresent()){
-            throw new RuleMasterException(HttpStatus.CONFLICT, "Rule with name " + ruleName + " already exists");
+            throw createRuleMasterException(
+                    "Duplicated rule name",
+                    HttpStatus.CONFLICT,
+                    new DetailBuilder(ErrorCode.ERR_DUPLICATED, "Rule with name", ruleName)
+            ).get();
         }
     }
 
@@ -66,18 +75,24 @@ public class RuleService {
         List<String> columnNames = tableData.getColumnNames();
         List<String> columnTypes = tableData.getColumnTypes();
 
-        return modifyRule(recordObtained.get(0), columnNames, columnTypes,ruleToEvaluate.getRuleTransformed());
+        return modifyRule(recordObtained.get(0), columnNames, columnTypes, ruleToEvaluate.getRuleTransformed());
     }
 
     public RuleDTO getRuleByName(String ruleName) {
-        return ruleMapper.fromRule(ruleRepository.findByName(ruleName)
-                .orElseThrow(() -> new RuleMasterException(HttpStatus.NOT_FOUND,"The rule with name "+ruleName+" not exists")));
+
+        if (ruleRepository.findByName(ruleName).isEmpty()){
+            throw createRuleMasterException(
+                    "Rule not found",
+                    HttpStatus.NOT_FOUND,
+                    new DetailBuilder(ErrorCode.ERR_404, "Rule with name", ruleName)
+            ).get();
+        }
+        return ruleMapper.fromRule(ruleRepository.findByName(ruleName).get());
     }
 
     public List<RuleDTO> getAllRules(){
         return ruleRepository.findAll().stream().map(ruleMapper::fromRule).toList();
     }
-
 
     private String modifyRule(Map<String, Object> recordObtained, List<String> columnNames,
                               List<String> columnTypes, String ruleDefinition){

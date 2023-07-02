@@ -1,24 +1,30 @@
 package com.perficient.ruleMaster.service;
 
 import com.perficient.ruleMaster.dto.UserDTO;
-import com.perficient.ruleMaster.exceptions.RuleMasterException;
+import com.perficient.ruleMaster.error.exception.DetailBuilder;
+import com.perficient.ruleMaster.error.exception.ErrorCode;
 import com.perficient.ruleMaster.maper.UserMapper;
 import com.perficient.ruleMaster.model.RuleMasterUser;
 import com.perficient.ruleMaster.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+import static com.perficient.ruleMaster.error.util.RuleMasterExceptionBuilder.createRuleMasterException;
+
 @Service
 @AllArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
 
-    private final UserMapper userMapper;
+    private UserMapper userMapper;
+
+    //private final PasswordEncoder passwordEncoder;
 
     public UserDTO createUser(UserDTO userDTO){
 
@@ -27,6 +33,7 @@ public class UserService {
         RuleMasterUser user = userMapper.fromUserDTO(userDTO);
 
         user.setUserId(UUID.randomUUID());
+        //user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userMapper.fromUser(userRepository.save(user));
     }
@@ -34,14 +41,24 @@ public class UserService {
     private void verifyUserByEmail(String email){
 
         if (userRepository.findByEmail(email).isPresent()){
-            throw new RuleMasterException(HttpStatus.CONFLICT, "User with email "+email+" already exists");
+            throw createRuleMasterException(
+                    "Email duplicated",
+                    HttpStatus.CONFLICT,
+                    new DetailBuilder(ErrorCode.ERR_DUPLICATED, "User with email", email)
+            ).get();
         }
     }
 
     public UserDTO getUser(String email) {
 
-        return userMapper.fromUser(userRepository.findByEmail(email).
-                orElseThrow(() -> new RuleMasterException(HttpStatus.NOT_FOUND, "User with email "+email+" not exists")));
+        if (userRepository.findByEmail(email).isEmpty()){
+            throw createRuleMasterException(
+                    "User not found",
+                    HttpStatus.NOT_FOUND,
+                    new DetailBuilder(ErrorCode.ERR_404, "User with email", email)
+            ).get();
+        }
+        return userMapper.fromUser(userRepository.findByEmail(email).get());
     }
 
     public List<UserDTO> getAllUsers() {
