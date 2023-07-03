@@ -36,6 +36,6 @@ public class RuleController implements RuleAPI {
 
     @Override
     public String sendRuleModified(String ruleName, String recordId) throws SQLException {
-        return ruleService.sendRuleModified(recordId, ruleName,"records");
+        return ruleService.sendRuleModified(recordId, ruleName,"table_data");
     }
 }
