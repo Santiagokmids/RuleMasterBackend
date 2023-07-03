@@ -19,7 +19,7 @@ public class TableController implements TableAPI {
     private final TableService tableService;
 
     @Override
-    public ColumnAdditionDTO addColumnToTable(ColumnAdditionDTO columnAdditionDTO) {
+    public ColumnAdditionDTO addColumnToTable(ColumnAdditionDTO columnAdditionDTO) throws SQLException {
         return tableService.addColumnToTable(columnAdditionDTO);
     }
     @Override

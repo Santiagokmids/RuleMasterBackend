@@ -15,7 +15,7 @@ public interface TableAPI {
     String BASE_TABLE_URL="/table";
 
     @PostMapping("/addColumn")
-    ColumnAdditionDTO addColumnToTable(@RequestBody ColumnAdditionDTO columnAdditionDTO) ;
+    ColumnAdditionDTO addColumnToTable(@RequestBody ColumnAdditionDTO columnAdditionDTO) throws SQLException;
 
     @GetMapping("/{tableName}")
     TableData getTableData(@PathVariable String tableName) throws SQLException;
