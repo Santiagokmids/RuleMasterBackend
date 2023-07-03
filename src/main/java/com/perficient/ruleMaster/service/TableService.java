@@ -26,7 +26,8 @@ import static com.perficient.ruleMaster.error.util.RuleMasterExceptionBuilder.cr
 public class TableService {
     private final JdbcTemplate jdbcTemplate;
 
-    public ColumnAdditionDTO addColumnToTable(ColumnAdditionDTO columnAdditionDTO) {
+    public ColumnAdditionDTO addColumnToTable(ColumnAdditionDTO columnAdditionDTO) throws SQLException {
+        verifyColumnName(columnAdditionDTO.getColumnName(),columnAdditionDTO.getTableName());
         String sql = "ALTER TABLE " + columnAdditionDTO.getTableName()  +
                     " ADD COLUMN " + columnAdditionDTO.getColumnName() +
                     " " + columnAdditionDTO.getColumnType();
@@ -34,6 +35,20 @@ public class TableService {
 
         return columnAdditionDTO;
     }
+
+
+    public void verifyColumnName(String columnName, String tableName) throws SQLException {
+        TableData tableData= getTableData(tableName);
+
+        if (tableData.getColumnNames().contains(columnName)){
+            throw createRuleMasterException(
+                    "Duplicated column name",
+                    HttpStatus.CONFLICT,
+                    new DetailBuilder(ErrorCode.ERR_DUPLICATED, "Column with name", columnName)
+            ).get();
+        }
+    }
+
 
     public TableData getTableData(String tableName) throws SQLException {
         DataSource dataSource = jdbcTemplate.getDataSource();
