@@ -99,8 +99,11 @@ public class RuleService {
 
         for (int i = 0; i < columnNames.size(); i++) {
 
-            if (isRecordObtainedNotNull(recordObtained, columnNames,i)){
+            if (isRecordObtainedNotNull(recordObtained, columnNames, i)){
                 ruleDefinition = putValues(recordObtained, columnNames, columnTypes, ruleDefinition, i);
+
+            }else{
+                ruleDefinition = ruleDefinition.replace(columnNames.get(i), "null");
             }
         }
         return ruleDefinition;
