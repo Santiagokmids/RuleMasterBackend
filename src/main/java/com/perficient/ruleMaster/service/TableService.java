@@ -113,7 +113,7 @@ public class TableService {
 
         List<Map<String, Object>> recordObtained = records.stream()
                 .filter(record -> record.get("record_id").toString().equals(recordId)).toList();
-        System.out.println("Cual es el bucle");
+
         if (recordObtained.isEmpty()){
             throw createRuleMasterException(
                     "Record not found",

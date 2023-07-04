@@ -99,14 +99,27 @@ public class RuleService {
 
         for (int i = 0; i < columnNames.size(); i++) {
 
-            if (columnTypes.get(i).equals("varchar")){
-                ruleDefinition = ruleDefinition
-                        .replace(columnNames.get(i),"'"+recordObtained.get(columnNames.get(i)).toString()+"'");
-            }else {
-                ruleDefinition = ruleDefinition.replace(columnNames.get(i),recordObtained.get(columnNames.get(i)).toString());
+            if (isRecordObtainedNotNull(recordObtained, columnNames,i)){
+                ruleDefinition = putValues(recordObtained, columnNames, columnTypes, ruleDefinition, i);
             }
         }
         return ruleDefinition;
     }
 
+    private boolean isRecordObtainedNotNull(Map<String, Object> recordObtained, List<String> columnNames, int counter){
+        return recordObtained.get(columnNames.get(counter)) != null;
+    }
+
+    private String putValues(Map<String, Object> recordObtained, List<String> columnNames,
+                             List<String> columnTypes, String ruleDefinition, int counter){
+
+        if (columnTypes.get(counter).equals("varchar")){
+            ruleDefinition = ruleDefinition
+                    .replace(columnNames.get(counter),"'"+recordObtained.get(columnNames.get(counter)).toString()+"'");
+        }else {
+            ruleDefinition = ruleDefinition.replace(columnNames.get(counter),recordObtained.get(columnNames.get(counter)).toString());
+        }
+
+        return ruleDefinition;
+    }
 }
