@@ -4,24 +4,29 @@ import com.perficient.ruleMaster.model.Rule;
 import com.perficient.ruleMaster.model.RuleMasterUser;
 import com.perficient.ruleMaster.repository.RuleRepository;
 import com.perficient.ruleMaster.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
 
 @TestConfiguration
 public class TestConfigurationData {
 
-    @Bean
-    CommandLineRunner commandLineRunner(UserRepository userRepository, RuleRepository ruleRepository){
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    //@Bean
+    CommandLineRunner commandLineRunner(UserRepository userRepository, RuleRepository ruleRepository, PasswordEncoder passwordEncoder){
 
         RuleMasterUser user1 = RuleMasterUser.builder()
                 .userId(UUID.randomUUID())
                 .name("John")
                 .lastName("Doe")
                 .email("johndoe@email.com")
-                .password("password")
+                .password(passwordEncoder.encode("password"))
                 .role("Admin")
                 .build();
 
@@ -30,7 +35,7 @@ public class TestConfigurationData {
                 .name("Marie")
                 .lastName("Doe")
                 .email("mariedoe@email.com")
-                .password("password")
+                .password(passwordEncoder.encode("password"))
                 .role("Rule manager")
                 .build();
 
@@ -39,7 +44,7 @@ public class TestConfigurationData {
                 .name("John")
                 .lastName("Johnson")
                 .email("johnson@email.com")
-                .password("password")
+                .password(passwordEncoder.encode("password"))
                 .role("Column manager")
                 .build();
 
@@ -48,7 +53,7 @@ public class TestConfigurationData {
                 .name("Sara")
                 .lastName("White")
                 .email("white@email.com")
-                .password("password")
+                .password(passwordEncoder.encode("password"))
                 .role("Record manager")
                 .build();
 

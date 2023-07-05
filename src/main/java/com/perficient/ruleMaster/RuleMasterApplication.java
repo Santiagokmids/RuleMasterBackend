@@ -19,7 +19,7 @@ public class RuleMasterApplication {
 		SpringApplication.run(RuleMasterApplication.class, args);
 	}
 
-	@Bean
+	//@Bean
 	CommandLineRunner commandLineRunner(UserRepository userRepository, RuleRepository ruleRepository, PasswordEncoder passwordEncoder){
 
 		RuleMasterUser user1 = RuleMasterUser.builder()
@@ -77,8 +77,8 @@ public class RuleMasterApplication {
 			userRepository.save(user2);
 			userRepository.save(user3);
 			userRepository.save(user4);
-			ruleRepository.save(rule1);
-			ruleRepository.save(rule2);
+			//ruleRepository.save(rule1);
+			//ruleRepository.save(rule2);
 		};
 	}
 
