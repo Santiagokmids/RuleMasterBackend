@@ -79,9 +79,9 @@ public class SecurityConfiguration {
             RequestMatcherDelegatingAuthorizationManager.builder()
                     .add(permitAll, (context, other) -> new AuthorizationDecision(true));
 
-        managerBuilder.add(new MvcRequestMatcher(introspector, "/users/**"), AuthorityAuthorizationManager.hasAnyAuthority("SCOPE_Administrador"));
+        managerBuilder.add(new MvcRequestMatcher(introspector, "/users/**"), AuthorityAuthorizationManager.hasAnyAuthority("SCOPE_Administrador","SCOPE_Gestor_de_columnas", "SCOPE_Gestor_de_registros", "SCOPE_Gestor_de_reglas"));
 
-        managerBuilder.add(new MvcRequestMatcher(introspector, "/table/**"), AuthorityAuthorizationManager.hasAnyAuthority("SCOPE_Gestor_de_columnas", "SCOPE_Gestor_de_registros", "Gestor_de_reglas"));
+        managerBuilder.add(new MvcRequestMatcher(introspector, "/table/**"), AuthorityAuthorizationManager.hasAnyAuthority("SCOPE_Gestor_de_columnas", "SCOPE_Gestor_de_registros", "SCOPE_Gestor_de_reglas"));
 
         managerBuilder.add(new MvcRequestMatcher(introspector, "/rules/**"), AuthorityAuthorizationManager.hasAnyAuthority("SCOPE_Gestor_de_registros", "SCOPE_Gestor_de_reglas"));
 
