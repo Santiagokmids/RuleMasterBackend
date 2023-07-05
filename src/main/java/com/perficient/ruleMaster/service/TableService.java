@@ -28,8 +28,8 @@ public class TableService {
 
     public ColumnAdditionDTO addColumnToTable(ColumnAdditionDTO columnAdditionDTO) throws SQLException {
 
-        verifyColumnName(columnAdditionDTO.getColumnName(),columnAdditionDTO.getTableName());
         columnAdditionDTO.setColumnName(transformSpacesInColumnName(columnAdditionDTO.getColumnName()));
+        verifyColumnName(columnAdditionDTO.getColumnName(),columnAdditionDTO.getTableName());
 
         String sql = "ALTER TABLE " + columnAdditionDTO.getTableName()  +
                     " ADD COLUMN " + columnAdditionDTO.getColumnName() +
