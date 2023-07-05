@@ -27,7 +27,10 @@ public class TableService {
     private final JdbcTemplate jdbcTemplate;
 
     public ColumnAdditionDTO addColumnToTable(ColumnAdditionDTO columnAdditionDTO) throws SQLException {
+
         verifyColumnName(columnAdditionDTO.getColumnName(),columnAdditionDTO.getTableName());
+        columnAdditionDTO.setColumnName(transformSpacesInColumnName(columnAdditionDTO.getColumnName()));
+
         String sql = "ALTER TABLE " + columnAdditionDTO.getTableName()  +
                     " ADD COLUMN " + columnAdditionDTO.getColumnName() +
                     " " + columnAdditionDTO.getColumnType();
@@ -36,6 +39,9 @@ public class TableService {
         return columnAdditionDTO;
     }
 
+    private String transformSpacesInColumnName(String columnName){
+        return columnName.replace(" ", "_");
+    }
 
     public void verifyColumnName(String columnName, String tableName) throws SQLException {
         TableData tableData= getTableData(tableName);
