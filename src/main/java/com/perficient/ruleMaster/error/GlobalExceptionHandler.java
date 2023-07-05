@@ -16,7 +16,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ruleException.getRuleMasterError().getStatus()).body(ruleException.getRuleMasterError());
     }
 
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<RuleMasterError> handleValidationExceptions( MethodArgumentNotValidException ex) {
         var errorBuilder = RuleMasterError.builder().status(HttpStatus.BAD_REQUEST);

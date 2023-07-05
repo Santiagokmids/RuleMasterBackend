@@ -1,6 +1,6 @@
 package com.perficient.ruleMaster.config;
 
-/*import com.perficient.ruleMaster.model.SecurityUser;
+import com.perficient.ruleMaster.model.SecurityUser;
 import com.perficient.ruleMaster.security.CustomAuthentication;
 import com.perficient.ruleMaster.service.UserManagementService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,12 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+@Component
+public class RuleMasterAuthenticationManager extends DaoAuthenticationProvider{
 
- */
-//@Component
-public class RuleMasterAuthenticationManager //extends DaoAuthenticationProvider
-{
-/*
     public RuleMasterAuthenticationManager(UserManagementService userManagementService, PasswordEncoder passwordEncoderConfiguration){
         this.setUserDetailsService(userManagementService);
         this.setPasswordEncoder(passwordEncoderConfiguration);
@@ -31,7 +28,4 @@ public class RuleMasterAuthenticationManager //extends DaoAuthenticationProvider
 
         return new CustomAuthentication(successAuthentication, securityUser.ruleMasterUser().getUserId().toString());
     }
-
- */
-
 }

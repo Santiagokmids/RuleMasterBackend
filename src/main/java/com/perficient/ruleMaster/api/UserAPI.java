@@ -13,7 +13,7 @@ public interface UserAPI {
 
     String BASE_USER_URL = "/users";
 
-    @PostMapping
+    @PostMapping()
     UserDTO createUser(@RequestBody UserDTO userDTO);
 
     @GetMapping("/{userEmail}")
@@ -21,4 +21,7 @@ public interface UserAPI {
 
     @GetMapping
     List<UserDTO> getAllUsers();
+
+    @GetMapping("/current")
+    UserDTO getCurrentUser();
 }

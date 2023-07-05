@@ -1,18 +1,15 @@
 package com.perficient.ruleMaster.model;
 
-/*import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
- */
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public record SecurityUser(RuleMasterUser ruleMasterUser) //implements UserDetails
-{
-    /*
+public record SecurityUser(RuleMasterUser ruleMasterUser) implements UserDetails{
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Stream.of(ruleMasterUser)
@@ -48,6 +45,4 @@ public record SecurityUser(RuleMasterUser ruleMasterUser) //implements UserDetai
     public boolean isEnabled() {
         return true;
     }
-
-     */
 }

@@ -1,9 +1,9 @@
 package com.perficient.ruleMaster.api;
 
 import com.perficient.ruleMaster.dto.RuleDTO;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.List;
 

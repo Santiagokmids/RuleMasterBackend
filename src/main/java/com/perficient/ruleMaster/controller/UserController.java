@@ -33,4 +33,9 @@ public class UserController implements UserAPI {
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
+
+    @Override
+    public UserDTO getCurrentUser() {
+        return userService.getCurrentUser();
+    }
 }

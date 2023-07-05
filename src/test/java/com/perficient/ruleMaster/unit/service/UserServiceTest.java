@@ -10,6 +10,7 @@ import com.perficient.ruleMaster.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -25,16 +26,16 @@ public class UserServiceTest {
 
     private UserService userService;
 
-    //@Autowired
-    //PasswordEncoder passwordEncoder;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @BeforeEach
     private void init(){
         userRepository = mock(UserRepository.class);
         userMapper = spy(UserMapperImpl.class);
-        //passwordEncoder = mock(PasswordEncoder.class);
+        passwordEncoder = mock(PasswordEncoder.class);
 
-        userService = new UserService(userRepository, userMapper);
+        userService = new UserService(userRepository, userMapper, passwordEncoder);
     }
 
     @Test
